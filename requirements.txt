@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+loguru
+
+requests
+pydantic
+
+aiopg
+aiopg[sa]
+sqlalchemy-filters

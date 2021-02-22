@@ -1,5 +1,5 @@
 
-### docker run command 
+### Postgres docker run command 
 ```
 docker run --name postgresdb -p 5432:5432 -e POSTGRES_PASSWORD=pass -d --rm postgres --max_prepared_transactions=100
 docker exec -it postgresdb bash
@@ -49,6 +49,16 @@ CREATE TABLE public.account (
 	CONSTRAINT account_pkey PRIMARY KEY (account_id)
 );
 ~~~
+
+### Start the application
+
+```
+cd two-phase-commit
+virtualenv -p python3 venv
+source venv/bin/activate
+pip install -r requirements.txt
+python3 -m app.main
+```
 
 ### Swagger UI ``http://0.0.0.0:8000/docs``
 

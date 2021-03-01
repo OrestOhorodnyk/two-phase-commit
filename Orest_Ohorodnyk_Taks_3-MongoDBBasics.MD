@@ -10,8 +10,8 @@ db.items.insertMany([
   {category: "Phone", model: "iPhone 7",producer: "Apple",price: 700, screen_resolution: 720 },
   {category: "TV", model: "smart tv 1212",producer: "Sumsung",price: 400, screen_resolution: 1080, smart_tv: "yes" },
   {category: "TV", model: "smart tv 100",producer : "LG","price" : 350, "sscreen resolution": 4000, smart_tv: "No" },
-  {category: "Laptop", model: "thinkpad",producer : "Lenovo","price" : 1250, screen_resolution: 1080, pecs: {"processor": "Intel Core i7", "RAM": 16, "SSD": "512 GB"} },
-  {category: "Laptop", model: "latitude 5400",producer : "Dell","price" : 1350, screen_resolution: 1080, pecs: {"processor": "Intel Core i7", "RAM": 16, "SSD": "1 TB", "OS":"linux"} },
+  {category: "Laptop", model: "thinkpad",producer : "Lenovo","price" : 1250, screen_resolution: 1080, specs: {"processor": "Intel Core i7", "RAM": 16, "SSD": "512 GB"} },
+  {category: "Laptop", model: "latitude 5400",producer : "Dell","price" : 1350, screen_resolution: 1080, specs: {"processor": "Intel Core i7", "RAM": 16, "SSD": "1 TB", "OS":"linux"} },
   {category: "Smart watch", model: "Marq Captain American Magic Edition",producer: "Garmin",price: 1800, screen_resolution: 240, batary_life: "21 day" },
   {category: "Smart watch", model: "Apple Watch Series 6 40mm Blue Aluminum",producer: "Apple",price: 500, screen_resolution: 240, batary_life: "2 days" },
 ])
@@ -46,9 +46,9 @@ finally:
 
 ```shell
 #Grop by category and count
-db.items.aggregate([
-    {"$group" : {_id:"$category", count:{$sum:1}}}
-]);
+  db.items.aggregate([
+      {"$group" : {_id:"$category", count:{$sum:1}}}
+  ]);
 
 #Count all items in Phone category
 db.items.find( { category: "Phone"}).count()
@@ -125,44 +125,124 @@ db.items.update(
 ## Товари ви додаєте в замовлення - orders, яке містити вартість, ім'я замовника, і адресу доставки.
 ## Товари (items) в замовленні (order) повинні бути представлені у вигляді references, а замовник (customer) у вигляді embed
 
-### Створіть кілька замовлень з різними наборами товарів, але так щоб один з товарів був у декількох замовленнях
+### 1) Створіть кілька замовлень з різними наборами товарів, але так щоб один з товарів був у декількох замовленнях
 
 ```shell
-var iphone_6 = db.products.find( { $and: [ { model: "iPhone 7"} , { producer: "Apple"} ] } ).next();
-var watch = db.products.find( { $and: [ { model: "Apple Watch Series 6 40mm Blue Aluminum"} , { producer: "Apple"} ] } ).next();
+var iphone_6 = db.items.find( { $and: [ { model: "iPhone 6"} , { producer: "Apple"} ] } ).next();
+var watch = db.items.find( { $and: [ { model: "Apple Watch Series 6 40mm Blue Aluminum"} , { producer: "Apple"} ] } ).next(); //common item
+var tv_sumsung = db.items.find( { $and: [ { model: "smart tv 1212"} , { producer: "Sumsung"} ] } ).next();
+var iphone_7 = db.items.find( { $and: [ { model: "iPhone 7"} , { producer: "Apple"} ] } ).next();
 
-iphone_6._id
-watch._id
+db.order.insertOne(
+{    
+  "order_number" : 201513,
+  "date" : ISODate("2015-04-14"),
+  "total_sum" : iphone_6.price + watch.price,
+  "customer" : {
+      "name" : "Andrii",
+      "surname" : "Rodinov",
+      "phones" : [ 9876543, 1234567],
+      "address" : "PTI, Peremohy 37, Kyiv, UA"
+  },
+  "payment" : {
+      "card_owner" : "Andrii Rodionov",
+      "cardId" : 12345678
+  },
+  "order_items_id" : [
+      {
+          "$ref" : "items",
+          "$id" : watch._id
+      },
+      {
+          "$ref" : "items",
+          "$id" : iphone_6._id
+      }
+  ]
+}
+);
+
+db.order.insertOne(
+{    
+  "order_number" : 201514,
+  "date" : ISODate("2015-04-15"),
+  "total_sum" : watch.price + tv_sumsung.price,
+  "customer" : {
+      "name" : "John",
+      "surname" : "Dou",
+      "phones" : [ 1111111, 222222],
+      "address" : "Bandery 37, Lviv, UA"
+  },
+  "payment" : {
+      "card_owner" : "John Dou",
+      "cardId" : 22345678
+  },
+  "order_items_id" : [
+      {
+          "$ref" : "items",
+          "$id" : watch._id
+      },
+      {
+          "$ref" : "items",
+          "$id" : tv_sumsung._id
+      }
+  ]
+}
+
+);
 
 
 db.order.insertOne(
 {    
-	"order_number" : 201513,
-	"date" : ISODate("2015-04-14"),
-	"total_sum" : iphone_6.price + watch.price,
-	"customer" : {
-    	"name" : "Andrii",
-    	"surname" : "Rodinov",
-    	"phones" : [ 9876543, 1234567],
-    	"address" : "PTI, Peremohy 37, Kyiv, UA"
-	},
-	"payment" : {
-    	"card_owner" : "Andrii Rodionov",
-    	"cardId" : 12345678
-	},
-	"order_items_id" : [
-    	{
-        	"$ref" : "items",
-        	"$id" : watch._id
-    	},
-    	{
-        	"$ref" : "items",
-        	"$id" : iphone_6._id
-    	}
-	]
+  "order_number" : 201515,
+  "date" : ISODate("2015-04-16"),
+  "total_sum" : iphone_7.price + watch.price,
+  "customer" : {
+      "name" : "James",
+      "surname" : "Bond",
+      "phones" : [ 3333333, 4444444],
+      "address" : "10 Main str, London, UK"
+  },
+  "payment" : {
+      "card_owner" : "James Bond",
+      "cardId" : 22345678
+  },
+  "order_items_id" : [
+      {
+          "$ref" : "items",
+          "$id" : watch._id
+      },
+      {
+          "$ref" : "items",
+          "$id" : iphone_7._id
+      }
+  ]
 }
 
+);
+db.getCollection("order").find({}).pretty()
 
-)
 
+```
+
+### 2) Виведіть всі замовлення
+```shell
+
+db.getCollection("order").find({}).pretty()
+
+```
+
+### 3) Виведіть замовлення з вартістю більше певного значення
+```shell
+db.getCollection("order").find(
+{ total_sum: { $gt: 1000 } }
+).pretty()
+
+```
+
+### 4) Знайдіть замовлення зроблені одним замовником
+
+```shell
+db.getCollection("order").find(
+{ "customer.name": "James" }
+).pretty()
 ```

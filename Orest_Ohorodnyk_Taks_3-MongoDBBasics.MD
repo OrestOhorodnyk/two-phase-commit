@@ -133,6 +133,8 @@ var watch = db.items.find( { $and: [ { model: "Apple Watch Series 6 40mm Blue Al
 var tv_sumsung = db.items.find( { $and: [ { model: "smart tv 1212"} , { producer: "Sumsung"} ] } ).next();
 var iphone_7 = db.items.find( { $and: [ { model: "iPhone 7"} , { producer: "Apple"} ] } ).next();
 
+db.order.drop()
+
 db.order.insertOne(
 {    
   "order_number" : 201513,
@@ -219,7 +221,35 @@ db.order.insertOne(
 }
 
 );
-db.getCollection("order").find({}).pretty()
+
+db.order.insertOne(
+{    
+  "order_number" : 201515,
+  "date" : ISODate("2015-04-16"),
+  "total_sum" : iphone_6.price + tv_sumsung.price,
+  "customer" : {
+      "name" : "James",
+      "surname" : "Bond",
+      "phones" : [ 3333333, 4444444],
+      "address" : "10 Main str, London, UK"
+  },
+  "payment" : {
+      "card_owner" : "James Bond",
+      "cardId" : 22345678
+  },
+  "order_items_id" : [
+      {
+          "$ref" : "items",
+          "$id" : tv_sumsung._id
+      },
+      {
+          "$ref" : "items",
+          "$id" : iphone_6._id
+      }
+  ]
+}
+
+);
 
 
 ```
@@ -246,3 +276,16 @@ db.getCollection("order").find(
 { "customer.name": "James" }
 ).pretty()
 ```
+
+### 5) Знайдіть всі замовлення з певним товаром (товарами) (шукати можна по ObjectId)
+
+```shell
+db.getCollection("order").find(
+    {"order_items_id.$id": watch._id}
+).pretty()
+```
+
+### 6) Додайте в усі замовлення з певним товаром ще один товар і збільште існуючу вартість замовлення на деяке значення Х
+
+
+

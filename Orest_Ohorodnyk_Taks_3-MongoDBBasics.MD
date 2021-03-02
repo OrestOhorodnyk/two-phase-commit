@@ -226,7 +226,7 @@ db.order.insertOne(
 
 db.order.insertOne(
 {    
-  "order_number" : 201515,
+  "order_number" : 201516,
   "date" : ISODate("2015-04-16"),
   "total_sum" : iphone_6.price + tv_sumsung.price,
   "customer" : {
@@ -306,4 +306,24 @@ db.order.updateMany(
 }
 )
 ```
+
+### 7) Виведіть кількість товарів в певному замовленні
+
+```shell
+db.order.aggregate([
+    { $match: {order_number: 201513}},
+   {
+      $project: {
+          
+         order_number: 1,
+         numberOfitems: { 
+             $cond: { if: { $isArray: "$order_items_id" }, then: { $size: "$order_items_id" }, else: "NA"} }
+         
+      }
+   }
+
+])
+```
+
+### 8) Виведіть тільки інформацію про кастомера і номери кредитної карт, для замовлень вартість яких перевищує певну суму
 

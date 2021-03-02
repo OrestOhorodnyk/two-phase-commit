@@ -5,6 +5,7 @@
 ### 1) Створіть декілька товарів з різним набором властивостей 
 
 ```shell
+#db.items.drop();
 db.items.insertMany([
   {category: "Phone", model: "iPhone 6",producer: "Apple",price: 600, screen_resolution: 720 },
   {category: "Phone", model: "iPhone 7",producer: "Apple",price: 700, screen_resolution: 720 },
@@ -14,8 +15,9 @@ db.items.insertMany([
   {category: "Laptop", model: "latitude 5400",producer : "Dell","price" : 1350, screen_resolution: 1080, specs: {"processor": "Intel Core i7", "RAM": 16, "SSD": "1 TB", "OS":"linux"} },
   {category: "Smart watch", model: "Marq Captain American Magic Edition",producer: "Garmin",price: 1800, screen_resolution: 240, batary_life: "21 day" },
   {category: "Smart watch", model: "Apple Watch Series 6 40mm Blue Aluminum",producer: "Apple",price: 500, screen_resolution: 240, batary_life: "2 days" },
+  {category: "Smart watch", model: "Vantage V",producer: "Polar",price: 420, screen_resolution: 240, batary_life: "20 days" },
+  {category: "Earbuds", model: "AirPods Pro",producer: "Apple",price: 250, screen_resolution: 240, batary_life: "5h" },
 ])
-
 ```
 
 ### 2) Напишіть запит, який виводіть усі товари (відображення у JSON)
@@ -287,5 +289,21 @@ db.getCollection("order").find(
 
 ### 6) Додайте в усі замовлення з певним товаром ще один товар і збільште існуючу вартість замовлення на деяке значення Х
 
+```shell
+#// This query will add AirPods Pro for all who have bought iPhone 6
+var apple_phone = db.items.find( { $and: [ { model: "iPhone 6" }, { producer: "Apple"} ] } ).next(); 
+var air_pods = db.items.find( { $and: [ { model: "AirPods Pro"} , { producer: "Apple"} ] } ).next();
 
+db.order.updateMany(
+{ "order_items_id.$id": apple_phone._id },
+{
+     $push: { order_items_id:{"$ref" : "items",  "$id" : air_pods._id} },
+     $inc: {total_sum: air_pods.price}
+},
+{
+     upsert: true,
+     multi: true,
+}
+)
+```
 

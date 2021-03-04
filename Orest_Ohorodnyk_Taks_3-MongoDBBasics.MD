@@ -194,7 +194,6 @@ db.order.insertOne(
 
 );
 
-
 db.order.insertOne(
 {    
   "order_number" : 201515,
@@ -327,3 +326,116 @@ db.order.aggregate([
 
 ### 8) Виведіть тільки інформацію про кастомера і номери кредитної карт, для замовлень вартість яких перевищує певну суму
 
+```shell
+db.order.aggregate(
+{ $match: { total_sum: { $gt: 1200 }  } },
+  { $project : {
+       "customer.name" : 1,
+        "payment.cardId" : 1,
+        total_sum : 1
+  } }
+).pretty();
+```
+
+### 9) Видаліть товар з замовлень, зроблених за певний період дат
+
+```shell
+db.order.update(
+     {date: { $gt: ISODate("2015-04-15")}},
+     {$set:{order_items_id:[]}},
+     { multi: true }
+ )
+
+OR
+
+db.order.update(
+ {date: { $gt: ISODate("2015-04-15")}}, 
+ { $pop: { order_items_id: 1 } }, 
+ { multi: true } 
+)
+```
+
+### 10) Перейменуйте у всіх замовлення ім'я (прізвище) замовника
+
+```shell
+db.order.update(
+   {  },
+   { $set: { "customer.surname" : "surname" } },
+   {
+     multi: true,
+   }
+)
+```
+
+### 11) (+2 бали)* Знайдіть замовлення зроблені одним замовником, і виведіть тільки інформацію про кастомера та товари
+у замовлені підставивши замість ObjectId("***") назви товарів та їх вартість (аналог join-а між таблицями orders та items).
+
+```shell
+db.order.aggregate([
+  {
+    "$project": {
+      "customer.name": 1,
+      "customer.surname": 1,
+      "order_number": 1,
+      "date": 1,
+      "order_items_id": 1
+    }
+  },
+  {
+    "$unwind": {
+      "path": "$order_items_id",
+      "preserveNullAndEmptyArrays": true
+    }
+  },
+  {
+    "$project": {
+      "customer.name": 1,
+      "customer.surname": 1,
+      "order_number": 1,
+      "date": 1,
+      "order_items_id": {
+        $arrayElemAt: [
+          {
+            $objectToArray: "$order_items_id"
+          },
+          1
+        ]
+      },
+      
+    }
+  },
+  {
+    "$project": {
+      "customer_name": "$customer.name",
+      "customer_surname": "$customer.surname",
+      "order_number": 1,
+      "date": 1,
+      "item_id": "$order_items_id.v",
+      
+    }
+  },
+  {
+    "$lookup": {
+      "from": "items",
+      "localField": "item_id",
+      "foreignField": "_id",
+      "as": "order_items"
+    }
+  },
+  {
+    "$unwind": "$order_items"
+  },
+  {
+    "$project": {
+      "customer_name": 1,
+      "customer_surname": 1,
+      "order_number": 1,
+      "date": 1,
+      "producer": "$order_items.producer",
+      "model": "$order_items.model",
+      "prie": "$order_items.price"
+    }
+  },
+  
+]).pretty();
+```

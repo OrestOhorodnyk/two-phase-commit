@@ -23,7 +23,7 @@ db.items.insertMany([
 ### 2) Напишіть запит, який виводіть усі товари (відображення у JSON)
 
 ```shell
-db.getCollection("items").find({}).pretty()
+db.getCollection("items").find({}).pretty();
 ```
 
 ```python
@@ -74,15 +74,15 @@ db.items.distinct('producer');
 ### 6) Напишіть запити, які вибирають товари за різними критеріям і їх сукупності: 
 #### a) категорія та ціна (в проміжку) - конструкція $and, 
 ```shell
-db.items.find( { $and: [ { price: { $gt: 600 } }, { price: { $lt: 700 }}, { category: "Phone"} ] } )
+db.items.find({ $and: [ { price: { $gt: 600 } }, { price: { $lt: 800 }}, { category: "Phone"} ] }).pretty();
 ```
 #### b) модель чи одна чи інша - конструкція $or,
 ```shell
-db.items.find( { $or: [ {model: "iPhone 6"}, {model: "iPhone 7"} ] } )
+db.items.find( { $or: [ {model: "iPhone 6"}, {model: "iPhone 7"} ] } ).pretty();
 ```
 #### c) виробники з переліку - конструкція $in
 ```shell
-db.items.find( { producer: { $in: [ "Apple", "LG" ] } } )
+db.items.find( { producer: { $in: [ "Apple", "LG" ] } } ).pretty();
 ```
 
 ### 7) Оновить певні товари, змінивши існуючі значення і додайте нові властивості (характеристики) усім товарам за певним критерієм
@@ -109,14 +109,13 @@ db.items.update(
 ### 8) Знайдіть товари у яких є (присутнє поле) певні властивості
 
 ```shell
-// find items with missing is_original property
-db.items.find( {is_original: { $exists: false } });
+db.items.find( {is_original: { $exists: true } }).pretty();
 ```
 
 ### 9) Для знайдених товарів збільшіть їх вартість на певну суму
 ```shell
 db.items.update(
-   {is_original: { $exists: false }},
+   {is_original: { $exists: true }},
    { $inc: { price: 1 } },
    { 
        upsert: false,
@@ -283,6 +282,7 @@ db.getCollection("order").find(
 ### 5) Знайдіть всі замовлення з певним товаром (товарами) (шукати можна по ObjectId)
 
 ```shell
+var watch = db.items.find( { $and: [ { model: "Apple Watch Series 6 40mm Blue Aluminum"} , { producer: "Apple"} ] } ).next(); 
 db.getCollection("order").find(
     {"order_items_id.$id": watch._id}
 ).pretty()

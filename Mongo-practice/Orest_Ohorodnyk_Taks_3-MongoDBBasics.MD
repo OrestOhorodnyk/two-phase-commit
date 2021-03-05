@@ -268,6 +268,7 @@ db.order.insertOne(
 );
 
 
+
 ```
 
 ### 2) Виведіть всі замовлення
@@ -277,6 +278,8 @@ db.getCollection("order").find({}).pretty()
 
 ```
 
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/b2.png?raw=true)
+
 ### 3) Виведіть замовлення з вартістю більше певного значення
 ```shell
 db.getCollection("order").find(
@@ -284,6 +287,8 @@ db.getCollection("order").find(
 ).pretty()
 
 ```
+
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/b3.png?raw=true)
 
 ### 4) Знайдіть замовлення зроблені одним замовником
 
@@ -293,6 +298,8 @@ db.getCollection("order").find(
 ).pretty()
 ```
 
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/b4.png?raw=true)
+
 ### 5) Знайдіть всі замовлення з певним товаром (товарами) (шукати можна по ObjectId)
 
 ```shell
@@ -301,6 +308,8 @@ db.getCollection("order").find(
     {"order_items_id.$id": watch._id}
 ).pretty()
 ```
+
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/b5.png?raw=true)
 
 ### 6) Додайте в усі замовлення з певним товаром ще один товар і збільште існуючу вартість замовлення на деяке значення Х
 
@@ -322,6 +331,8 @@ db.order.updateMany(
 )
 ```
 
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/b6.png?raw=true)
+
 ### 7) Виведіть кількість товарів в певному замовленні
 
 ```shell
@@ -339,6 +350,8 @@ db.order.aggregate([
 
 ])
 ```
+
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/b7.png?raw=true)
 
 ### 8) Виведіть тільки інформацію про кастомера і номери кредитної карт, для замовлень вартість яких перевищує певну суму
 
@@ -371,6 +384,8 @@ db.order.update(
 )
 ```
 
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/b9.png?raw=true)
+
 ### 10) Перейменуйте у всіх замовлення ім'я (прізвище) замовника
 
 ```shell
@@ -382,6 +397,8 @@ db.order.update(
    }
 )
 ```
+
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/b10.png?raw=true)
 
 ### 11) (+2 бали)* Знайдіть замовлення зроблені одним замовником, і виведіть тільки інформацію про кастомера та товари
 у замовлені підставивши замість ObjectId("***") назви товарів та їх вартість (аналог join-а між таблицями orders та items).
@@ -455,7 +472,9 @@ db.order.aggregate([
   
 ]).pretty();
 ```
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/b11-1.png?raw=true)
 
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/b11-2.png?raw=true)
 
 ### Створіть Сapped collection яка б містила 5 останніх відгуків на наш інтернет-магазин. Структуру запису визначіть самостійно.
 ### 1) Перевірте що при досягненні обмеження старі відгуки будуть затиратись
@@ -475,3 +494,6 @@ db.feedback.insertOne({"comment": "comment 6"});
 
 db.getCollection("feedback").find({}).pretty();
 ```
+
+
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/b12.png?raw=true)

@@ -25,7 +25,7 @@ db.items.insertMany([
 ```shell
 db.getCollection("items").find({}).pretty();
 ```
-
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/2.png?raw=true)
 ```python
 from pymongo import MongoClient
 
@@ -64,26 +64,34 @@ db.items.find( { category: "Phone"}).count()
 ```shell
 db.items.distinct('category').length;
 ```
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/4.png?raw=true)
 
 ### 5) Виведіть список всіх виробників товарів без повторів
 
 ```shell
 db.items.distinct('producer');
 ```
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/5.png?raw=true)
 
 ### 6) Напишіть запити, які вибирають товари за різними критеріям і їх сукупності: 
 #### a) категорія та ціна (в проміжку) - конструкція $and, 
 ```shell
 db.items.find({ $and: [ { price: { $gt: 600 } }, { price: { $lt: 800 }}, { category: "Phone"} ] }).pretty();
 ```
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/6a.png?raw=true)
+
 #### b) модель чи одна чи інша - конструкція $or,
 ```shell
 db.items.find( { $or: [ {model: "iPhone 6"}, {model: "iPhone 7"} ] } ).pretty();
 ```
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/6b.png?raw=true)
+
 #### c) виробники з переліку - конструкція $in
 ```shell
 db.items.find( { producer: { $in: [ "Apple", "LG" ] } } ).pretty();
 ```
+
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/6c.png?raw=true)
 
 ### 7) Оновить певні товари, змінивши існуючі значення і додайте нові властивості (характеристики) усім товарам за певним критерієм
 ```shell
@@ -106,11 +114,15 @@ db.items.update(
 );
 ```
 
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/7.png?raw=true)
+
 ### 8) Знайдіть товари у яких є (присутнє поле) певні властивості
 
 ```shell
 db.items.find( {is_original: { $exists: true } }).pretty();
 ```
+
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/8.png?raw=true)
 
 ### 9) Для знайдених товарів збільшіть їх вартість на певну суму
 ```shell
@@ -124,6 +136,8 @@ db.items.update(
 )
 
 ```
+
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/9.png?raw=true)
 
 ## Товари ви додаєте в замовлення - orders, яке містити вартість, ім'я замовника, і адресу доставки.
 ## Товари (items) в замовленні (order) повинні бути представлені у вигляді references, а замовник (customer) у вигляді embed

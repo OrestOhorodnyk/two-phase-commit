@@ -43,6 +43,7 @@ finally:
     client.close()
 
 ```
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/1.png?raw=true)
 
 ### 3) Підрахуйте скільки товарів у певної категорії
 
@@ -56,6 +57,7 @@ finally:
 db.items.find( { category: "Phone"}).count()
 
 ```
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/3.png?raw=true)
 
 ### 4) Підрахуйте скільки є різних категорій товарів
 

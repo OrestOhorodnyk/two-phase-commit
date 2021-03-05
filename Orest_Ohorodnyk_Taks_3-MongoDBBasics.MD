@@ -439,3 +439,23 @@ db.order.aggregate([
   
 ]).pretty();
 ```
+
+
+### Створіть Сapped collection яка б містила 5 останніх відгуків на наш інтернет-магазин. Структуру запису визначіть самостійно.
+### 1) Перевірте що при досягненні обмеження старі відгуки будуть затиратись
+
+```shell
+db.createCollection("feedback", { capped : true, size : 4096, max : 5 } );
+db.feedback.insertOne({"comment": "comment 1"});
+db.feedback.insertOne({"comment": "comment 2"});
+db.feedback.insertOne({"comment": "comment 3"});
+db.feedback.insertOne({"comment": "comment 4"});
+db.feedback.insertOne({"comment": "comment 5"});
+
+
+db.getCollection("feedback").find({}).pretty();;
+
+db.feedback.insertOne({"comment": "comment 6"});
+
+db.getCollection("feedback").find({}).pretty();
+```

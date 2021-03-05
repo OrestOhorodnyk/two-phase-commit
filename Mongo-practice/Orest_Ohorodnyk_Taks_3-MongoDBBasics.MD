@@ -29,6 +29,7 @@ db.getCollection("items").find({}).pretty();
 
 ![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/1.png?raw=true)
 
+//may be handy in future
 ```python
 from pymongo import MongoClient
 

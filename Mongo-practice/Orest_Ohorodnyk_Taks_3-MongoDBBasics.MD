@@ -370,6 +370,8 @@ db.order.aggregate(
 ).pretty();
 ```
 
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Mongo-practice/screenshots/b8.png?raw=true)
+
 ### 9) Видаліть товар з замовлень, зроблених за певний період дат
 
 ```shell

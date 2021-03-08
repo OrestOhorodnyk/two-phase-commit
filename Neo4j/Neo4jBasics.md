@@ -71,11 +71,15 @@ Match (o:Order {id: 1}) -[:INCLUDED]-(i:Item) return o,i
 Match (o:Order {id: 2}) -[:INCLUDED]-(i:Item) return  sum(i.price)
 ```
 
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Neo4j/Screenshots/2.png)
+
 ### 3) Знайти всі Orders конкретного Customer
 
 ```shell
 Match (c:Customer {name: "John"}) -[:MADE]-(o:Order) return c,o
 ```
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Neo4j/Screenshots/3.png)
+
 
 ### 4) Знайти всі Items куплені конкретним Customer (через Order)
 
@@ -83,17 +87,23 @@ Match (c:Customer {name: "John"}) -[:MADE]-(o:Order) return c,o
 MATCH (c:Customer {name: "John"})-[m:MADE]-(o:Order)-[r:INCLUDED]-(i:Item) RETURN i
 ```
 
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Neo4j/Screenshots/4.png)
+
 ### 5) Знайти кількість Items куплені конкретним Customer (через Order)
 
 ```shell
 MATCH (c:Customer {name: "John"})-[m:MADE]-(o:Order)-[r:INCLUDED]-(i:Item) RETURN count(i)
 ```
 
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Neo4j/Screenshots/5.png)
+
 ### 6) Знайти для Customer на яку суму він придбав товарів (через Order)
 
 ```shell
 MATCH (c:Customer {name: "John"})-[m:MADE]-(o:Order)-[r:INCLUDED]-(i:Item) RETURN sum(i.price)
 ```
+
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Neo4j/Screenshots/6.png)
 
 ### 7) Знайті скільки разів кожен товар був придбаний, відсортувати за цим значенням
 
@@ -103,17 +113,24 @@ RETURN i.producer, i.model, count(r) as count
 ORDER BY COUNT(r) DESC;
 ```
 
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Neo4j/Screenshots/7.png)
+
 ### 8) Знайти всі Items переглянуті (view) конкретним Customer
 
 ```shell 
 MATCH (c:Customer {name: "John"})-[r:VIEWED]-(i:Item) RETURN c, i
 ```
 
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Neo4j/Screenshots/8.png)
+
+
 ### 9) Знайти інші Items що купувались разом з конкретним Item (тобто всі Items що входять до Order-s разом з даними Item)
 
 ```shell
 MATCH (apple:Item {producer: "Apple", model:"iPhone 6"})-[:INCLUDED]->(:Order)<-[:INCLUDED]-(i:Item) return i.producer, i.model
 ```
+
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Neo4j/Screenshots/9.png)
 
 
 ### 10) Знайти Customers які купили даний конкретний Item
@@ -122,6 +139,9 @@ MATCH (apple:Item {producer: "Apple", model:"iPhone 6"})-[:INCLUDED]->(:Order)<-
 MATCH (c:Customer)-[m:MADE]-(o:Order)-[r:INCLUDED]-(i:Item{producer:"Garmin", model: "Marq Captain American Magic Edition"}) RETURN c.name
 ```
 
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Neo4j/Screenshots/10.png)
+
+
 ### 11) Знайти для певного Customer(а) товари, які він переглядав, але не купив
 
 ```shell
@@ -129,3 +149,5 @@ MATCH (c:Customer {name: "Joe"})-[r:VIEWED]-(i:Item)
 WHERE NOT (i)-[:INCLUDED]-(:Order)
 RETURN i
 ```
+
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Neo4j/Screenshots/11.png)

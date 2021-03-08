@@ -63,6 +63,8 @@ call db.schema.visualization()
 Match (o:Order {id: 1}) -[:INCLUDED]-(i:Item) return o,i
 ```
 
+![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Neo4j/Screenshots/1.png)
+
 ### 2) Підрахувати вартість конкретного Order
 
 ```shell

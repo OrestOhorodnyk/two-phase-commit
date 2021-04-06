@@ -1,8 +1,4 @@
-###Сконфігурувати кластер з 3-х нод:
-####https://hub.docker.com/_/cassandra 
-####https://gokhanatil.com/2018/02/build-a-cassandra-cluster-on-docker.html 
-####https://www.jamescoyle.net/how-to/2448-create-a-simple-cassandra-cluster-with-3-nodes
-####https://www.digitalocean.com/community/tutorials/how-to-run-a-multi-node-cluster-database-with-cassandra-on-ubuntu-14-04
+### Сконфігурувати кластер з 3-х нод
 
 ```shell
  
@@ -13,13 +9,13 @@
  docker run --name cassandra-n3 -d --network cassandra-network -e CASSANDRA_SEEDS=cassandra-n1 cassandra:4.0
 ```
 
-###Перевірити правильність конфігурації за допомогою nodetool status
+### Перевірити правильність конфігурації за допомогою nodetool status
 
 ```shell
 docker exec cassandra-n1 nodetool status 
 ```
 
-###Викоритовуючи  cqlsh, створити три Keyspace з replication factor 1, 2, 3
+### Викоритовуючи  cqlsh, створити три Keyspace з replication factor 1, 2, 3
 
 ```shell
 CREATE KEYSPACE IF NOT EXISTS ishop_rf1
@@ -81,7 +77,7 @@ CREATE TABLE ishop_rf3.items_3(
 
 ```
 
-###Спробуйте писати і читати на / та з різних нод.
+### Спробуйте писати і читати на / та з різних нод.
 ```shell
 docker exec -it cassandra-n1 cqlsh
  
@@ -95,7 +91,7 @@ select * from ishop_rf2.items_2;
 select * from ishop_rf3.items_3;
 ```
 
-###Вставте дані в створені таблиці і подивіться на їх розподіл по вузлах кластера (для кожного з кейспесов - nodetool status)
+### Вставте дані в створені таблиці і подивіться на їх розподіл по вузлах кластера (для кожного з кейспесов - nodetool status)
 
 
 ```shell
@@ -106,7 +102,7 @@ docker exec cassandra-n1 nodetool getendpoints -- ishop_rf2 items_2 2
 docker exec cassandra-n1 nodetool getendpoints -- ishop_rf3 items_3 3
 ```
 
-###Відключиіть одну з нод. Для кожного з кейспейсів визначить з якими рівнями consistency можемо читати та писати, і які з них забезпечують strong consistency 
+### Відключиіть одну з нод. Для кожного з кейспейсів визначить з якими рівнями consistency можемо читати та писати, і які з них забезпечують strong consistency 
 
 ```shell
 docker stop cassandra-n1
@@ -127,7 +123,7 @@ CONSISTENCY SERIAL; able to read only from 3, no inserts available
 CONSISTENCY LOCAL_SERIAL; SERIAL; able to read only from 3, no inserts available
 ```
 
-###Зробить так щоб три ноди працювали, але не бачили одна одну по мережі (відключити зв'язок між ними)
+### Зробить так щоб три ноди працювали, але не бачили одна одну по мережі (відключити зв'язок між ними)
 
 ```shell
 docker network disconnect cassandra-network cassandra-n1 
@@ -146,7 +142,7 @@ select * from ishop_rf3.items_3;
 
 ```
 
-###Перевірте поведінку lightweight transactions для попередніх пунктів у розділеному на три частини кластері 
+### Перевірте поведінку lightweight transactions для попередніх пунктів у розділеному на три частини кластері 
 
 ```shell
 docker network disconnect cassandra-network cassandra-n1 

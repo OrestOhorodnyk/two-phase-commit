@@ -17,5 +17,5 @@ source venv/bin/activate
 python main.py
 ```
 
-###Results will be printed to the console
+### Results will be printed to the console
 ![alt text](https://github.com/OrestOhorodnyk/two-phase-commit/blob/master/Redis/redis.png)

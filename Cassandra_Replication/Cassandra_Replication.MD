@@ -18,6 +18,8 @@ docker exec cassandra-n1 nodetool status
 ### Викоритовуючи  cqlsh, створити три Keyspace з replication factor 1, 2, 3
 
 ```shell
+docker exec -it cassandra-n1 cqlsh
+
 CREATE KEYSPACE IF NOT EXISTS ishop_rf1
 WITH replication = {
   'class' : 'SimpleStrategy',

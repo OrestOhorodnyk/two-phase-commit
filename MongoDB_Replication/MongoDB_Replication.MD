@@ -17,7 +17,7 @@ rs.initiate(config)
 
 ### Продемонструвати запис даних на primary node з різними Write Concern Levels
 
-* Unacknowledged
+* Unacknowledged - Requests no acknowledgment of the write operation. However, w: 0 may return information about socket exceptions and networking errors to the application. Data can be rolled back if the primary steps down before the write operations have replicated to any of the secondaries.
 
 ```shell
 db.products.insert(
@@ -26,7 +26,7 @@ db.products.insert(
 )
 ```
 
-* Acknowledged
+* Acknowledged - Requests acknowledgment that the write operation has propagated to the standalone mongod or the primary in a replica set. w: 1 is the default write concern for MongoDB. Data can be rolled back if the primary steps down before the write operations have replicated to any of the secondaries.
 
 ```shell
 db.products.insert(
@@ -35,7 +35,8 @@ db.products.insert(
 )
 ```
 
-* Journaled
+* Journaled - The j option requests acknowledgment from MongoDB that the write operation has been written to the on-disk journal. To provide durability in the event of a failure, MongoDB uses write ahead logging to on-disk journal files.
+
 
 ```shell
 db.products.insert(
@@ -44,7 +45,7 @@ db.products.insert(
 )
 ```
 
-* AcknowledgedReplica
+* AcknowledgedReplica - Any data-bearing voting member of the replica set can contribute to write acknowledgment of "majority" write operations. j=true Acknowledgment requires writing operation to on-disk journal.
 ```shell
 db.products.insert(
    {category: "TV", model: "smart tv 100",producer : "LG","price" : 350, "screen resolution": 4000, smart_tv: "No" },
